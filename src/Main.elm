@@ -28,7 +28,10 @@ a modal should be pretty open and loosely defined with few requirements.
 
 import Browser exposing (Document)
 import Html.Styled as Html exposing (Html)
+import Html.Styled.Attributes as Attr
 import Json.Decode as JD
+import Style as S
+import View.Button.Wide as WideButton
 
 
 
@@ -39,6 +42,10 @@ import Json.Decode as JD
 
 type alias Model =
     {}
+
+
+type Component
+    = Component__Button
 
 
 type Msg
@@ -54,6 +61,17 @@ type Msg
 init : JD.Value -> ( Model, Cmd Msg )
 init json =
     ( {}, Cmd.none )
+
+
+
+--------------------------------------------------------
+-- HELPERS --
+--------------------------------------------------------
+
+
+allComponents : List Component
+allComponents =
+    [ Component__Button ]
 
 
 
@@ -84,7 +102,41 @@ document model =
 
 view : Model -> List (Html Msg)
 view model =
-    [ Html.text "Hello World" ]
+    List.map componentView allComponents
+
+
+componentView : Component -> Html Msg
+componentView component =
+    Html.div
+        [ Attr.css
+            [ S.row ]
+        ]
+        [ Html.div
+            [ Attr.css
+                [ S.flex1 ]
+            ]
+            [ Html.text "TODO - code block area" ]
+        , componentExampleView component
+        ]
+
+
+componentExampleView : Component -> Html Msg
+componentExampleView component =
+    Html.div
+        [ Attr.css
+            [ S.flex1 ]
+        ]
+        (case component of
+            Component__Button ->
+                [ Html.div
+                    [ Attr.css
+                        [ S.w64 ]
+                    ]
+                    [ WideButton.simple "ADD TO CART" NoOp
+                        |> WideButton.toHtml
+                    ]
+                ]
+        )
 
 
 
