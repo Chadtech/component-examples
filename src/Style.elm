@@ -9,6 +9,7 @@ module Style exposing
     , block
     , border
     , borderB
+    , borderBox
     , borderL
     , borderLg
     , borderNone
@@ -46,6 +47,7 @@ module Style exposing
     , fontWeight300
     , fontWeight500
     , fontWeight600
+    , fontWeight800
     , g0p5
     , g1
     , g2
@@ -203,6 +205,7 @@ module Style exposing
     , sNeg128
     , setBgColorVar
     , setPrimaryColorVar
+    , shadow
     , shrink0
     , squareBL
     , squareBR
@@ -565,6 +568,11 @@ defaultCursor =
 borderBox : Css.Style
 borderBox =
     Css.boxSizing Css.borderBox
+
+
+shadow : Css.Style
+shadow =
+    Css.property "box-shadow" "0 27px 15px -17px rgba(0,0,0,.3), 0 2px 4px rgba(0,0,0,.3)"
 
 
 w0 : Css.Style
@@ -1336,6 +1344,11 @@ fontItalic =
 fontWeight1000 : Css.Style
 fontWeight1000 =
     Css.fontWeight (Css.int 1000)
+
+
+fontWeight800 : Css.Style
+fontWeight800 =
+    Css.fontWeight (Css.int 800)
 
 
 fontWeight600 : Css.Style

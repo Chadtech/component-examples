@@ -48,6 +48,25 @@ chevronUpSvg =
         ]
 
 
+chevronDownSvg : Html msg
+chevronDownSvg =
+    Svg.svg
+        [ SvgAttr.viewBox "0 0 24 24"
+        , SvgAttr.css
+            [ S.wFull
+            , S.hAuto
+            ]
+        ]
+        [ Svg.path
+            [ SvgAttr.d "M6 15l6-6 6 6"
+            , SvgAttr.fill "none"
+            , SvgAttr.stroke "currentColor"
+            , SvgAttr.strokeWidth "2"
+            ]
+            []
+        ]
+
+
 
 --------------------------------------------------------------------------------
 -- API --
@@ -68,7 +87,7 @@ toHtml body collapsible =
         icon : Html msg
         icon =
             if collapsible.isOpen then
-                chevronUpSvg
+                chevronDownSvg
 
             else
                 chevronUpSvg

@@ -27,12 +27,14 @@ a modal should be pretty open and loosely defined with few requirements.
 -}
 
 import Browser exposing (Document)
+import Css
 import Css.Global
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attr
 import Json.Decode as JD
 import Style as S
 import View.Button as Button
+import View.Button.Big as BigButton
 import View.Collapsible as Collapsible
 
 
@@ -147,6 +149,25 @@ globalStyles =
             , S.p4
             , S.col
             , S.g4
+            , Css.backgroundColor <| Css.rgb 247 247 247
+            ]
+        , Css.Global.everything
+            [ Css.fontFamilies
+                [ "GTUltra"
+                , "Lato"
+                , "\"Noto Sans\""
+                , "\"Noto Sans JP\""
+                , "\"Noto Sans KR\""
+                , "\"Noto Sans SC\""
+                , "\"Noto Sans TC\""
+                , "\"ui - sans - serif\""
+                , "\"system - ui\""
+                , "\"sans - serif\""
+                , "\"Apple Color Emoji\""
+                , "\"Segoe UI Emoji\""
+                , "\"Segoe UI Symbol\""
+                , "\"Noto Color Emoji\""
+                ]
             ]
         ]
 
@@ -189,22 +210,28 @@ componentExampleView model component =
                         ]
                     ]
                     [ Button.simple "Hello" ClickedHello
+                        |> Button.disable False
                         |> Button.toHtml
                     , Button.simple "Hi" ClickedHello
                         |> Button.toHtml
                     ]
                 , Html.div
                     [ Attr.css
-                        [ S.w64 ]
+                        [ S.w64
+                        ]
                     ]
-                    [ Button.simple "ADD TO CART" ClickedAddToCart
-                        |> Button.fullWidth
-                        |> Button.toHtml
+                    [ BigButton.simple "ADD TO CART" ClickedAddToCart
+                        |> BigButton.toHtml
                     ]
                 ]
 
             Component__Collapsible ->
-                List.map (collapsibleExampleView model.openCollapsibles) allCollapsibleExamples
+                [ Html.div
+                    [ Attr.css
+                        [ S.borderB ]
+                    ]
+                    (List.map (collapsibleExampleView model.openCollapsibles) allCollapsibleExamples)
+                ]
         )
 
 
@@ -218,33 +245,43 @@ collapsibleExampleView openCollapsibles example =
         isOpen : Bool
         isOpen =
             List.member example openCollapsibles
+
+        collapsible : Html Msg
+        collapsible =
+            case example of
+                CE__Text ->
+                    Collapsible.simple
+                        "Text"
+                        { isOpen = isOpen }
+                        msg
+                        |> Collapsible.toHtml
+                            (if isOpen then
+                                [ Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
+
+                             else
+                                []
+                            )
+
+                CE__Filter ->
+                    Collapsible.simple
+                        "Filter"
+                        { isOpen = isOpen }
+                        msg
+                        |> Collapsible.toHtml
+                            (if isOpen then
+                                [ Html.text "TODO" ]
+
+                             else
+                                []
+                            )
     in
-    case example of
-        CE__Text ->
-            Collapsible.simple
-                "Text"
-                { isOpen = isOpen }
-                msg
-                |> Collapsible.toHtml
-                    (if isOpen then
-                        [ Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
-
-                     else
-                        []
-                    )
-
-        CE__Filter ->
-            Collapsible.simple
-                "Filter"
-                { isOpen = isOpen }
-                msg
-                |> Collapsible.toHtml
-                    (if isOpen then
-                        [ Html.text "TODO" ]
-
-                     else
-                        []
-                    )
+    Html.div
+        [ Attr.css
+            [ S.borderT
+            , S.p2
+            ]
+        ]
+        [ collapsible ]
 
 
 
