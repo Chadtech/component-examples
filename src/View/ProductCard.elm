@@ -1,7 +1,13 @@
 module View.ProductCard exposing
     ( default
+    , descriptionView
     , globalStyles
+    , imageView
+    , newChip
+    , priceView
     , showInsideChip
+    , swatchesView
+    , titleView
     , view
     , withHoverOverChip
     )
@@ -11,6 +17,7 @@ import Css.Global
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attr
 import Style as S
+import View.ProductCard.Swatch as Swatch exposing (Swatch)
 
 
 
@@ -47,16 +54,11 @@ withHoverOverChip chip pc =
 
 view : ProductCard msg -> List (Html msg) -> Html msg
 view productCard body =
-    Html.div
-        [ Attr.css
-            [ Css.backgroundColor <| Css.rgb 225 225 225
-            , S.relative
-            ]
-        , Attr.class "product-card"
-        ]
-        ((productCard.hoverOverChip
-            |> Maybe.map
-                (\html ->
+    let
+        hoverOverChip : Html msg
+        hoverOverChip =
+            case productCard.hoverOverChip of
+                Just chip ->
                     Html.div
                         [ Attr.css
                             [ S.top0
@@ -65,12 +67,66 @@ view productCard body =
                             ]
                         , Attr.class "hover-over-chip"
                         ]
-                        [ html ]
-                )
-            |> Maybe.withDefault (Html.text "")
-         )
-            :: body
-        )
+                        [ chip ]
+
+                Nothing ->
+                    Html.text ""
+    in
+    Html.div
+        [ Attr.css
+            [ Css.backgroundColor <| Css.rgb 247 247 247
+            , S.relative
+            , S.col
+            , S.itemsCenter
+            , S.p2
+            , S.g1
+            ]
+        , Attr.class "product-card"
+        ]
+        (hoverOverChip :: body)
+
+
+titleView : String -> Html msg
+titleView title =
+    Html.div
+        [ Attr.css
+            [ S.wFull ]
+        ]
+        [ Html.text title ]
+
+
+priceView : String -> Html msg
+priceView price =
+    Html.div
+        [ Attr.css
+            [ S.wFull
+            ]
+        ]
+        [ Html.text price ]
+
+
+swatchesView : List (Swatch msg) -> Html msg
+swatchesView swatches =
+    Html.div
+        [ Attr.css
+            [ S.wFull
+            , S.g2
+            , S.row
+            ]
+        ]
+        (List.map Swatch.toHtml swatches)
+
+
+descriptionView : String -> Html msg
+descriptionView description =
+    Html.div
+        [ Attr.css
+            [ S.wFull
+            , S.textSm
+            , Css.color <| Css.rgb 76 76 76
+            ]
+        ]
+        [ Html.text description ]
 
 
 globalStyles : List Css.Global.Snippet
@@ -92,6 +148,20 @@ globalStyles =
     ]
 
 
+imageView : String -> Html msg
+imageView imageUrl =
+    Html.div
+        [ Attr.css
+            [ Css.backgroundImage <| Css.url imageUrl
+            , Css.backgroundSize Css.cover
+            , Css.backgroundPosition Css.center
+            , S.h64
+            , S.w64
+            ]
+        ]
+        []
+
+
 showInsideChip : Html msg
 showInsideChip =
     Html.div
@@ -102,3 +172,18 @@ showInsideChip =
             ]
         ]
         [ Html.text "SHOW INSIDE +" ]
+
+
+newChip : Html msg
+newChip =
+    Html.div
+        [ Attr.css
+            [ Css.backgroundColor <| Css.rgb 108 184 200
+            , S.rounded
+            , S.px2
+            , S.py1
+            , Css.color <| Css.rgb 255 255 255
+            , S.textSm
+            ]
+        ]
+        [ Html.text "New" ]

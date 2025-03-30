@@ -38,6 +38,7 @@ import View.Button.Big as BigButton
 import View.Collapsible as Collapsible
 import View.ProductCard as ProductCard
 import View.ProductCard.Grid as ProductCardGrid
+import View.ProductCard.Swatch as ProductCardSwatch
 
 
 
@@ -63,7 +64,7 @@ type CollapsibleExample
 
 type Product
     = Product__CellPhone
-    | Product__Handbag
+    | Product__bag
 
 
 type Msg
@@ -112,7 +113,7 @@ allCollapsibleExamples =
 allProducts : List Product
 allProducts =
     [ Product__CellPhone
-    , Product__Handbag
+    , Product__bag
     ]
 
 
@@ -165,7 +166,8 @@ globalStyles =
             , S.p4
             , S.col
             , S.g4
-            , Css.backgroundColor <| Css.rgb 247 247 247
+
+            --, Css.backgroundColor <| Css.rgb 247 247 247
             ]
          , Css.Global.everything
             [ Css.fontFamilies
@@ -270,12 +272,68 @@ productView product =
                 (ProductCard.default
                     |> ProductCard.withHoverOverChip ProductCard.showInsideChip
                 )
-                [ Html.text "YAHOO" ]
+                [ ProductCard.imageView
+                    "https://bellroy-product-images.imgix.net/bellroy_dot_com_range_page_image/USD/PECA-BIC-502/0?auto=format&fit=max&w=640"
+                , ProductCard.titleView "Bio Phone Case"
+                , ProductCard.priceView "$19"
+                , ProductCard.swatchesView
+                    [ ProductCardSwatch.color
+                        { r = 255
+                        , g = 0
+                        , b = 0
+                        , selected = True
+                        , onClick = ClickedAddToCart
+                        }
+                    , ProductCardSwatch.color
+                        { r = 0
+                        , g = 255
+                        , b = 0
+                        , selected = False
+                        , onClick = ClickedAddToCart
+                        }
+                    , ProductCardSwatch.color
+                        { r = 0
+                        , g = 0
+                        , b = 255
+                        , selected = False
+                        , onClick = ClickedAddToCart
+                        }
+                    ]
+                , ProductCard.descriptionView
+                    "Slim protection from your iphone"
+                ]
 
-        Product__Handbag ->
+        Product__bag ->
             ProductCard.view
                 ProductCard.default
-                [ Html.text "Doink" ]
+                [ ProductCard.imageView
+                    "https://bellroy-product-images.imgix.net/bellroy_dot_com_range_page_image/USD/BHRA-DNB-243/0?auto=format&fit=max&w=640"
+                , Html.div
+                    [ Attr.css
+                        [ S.row
+                        , S.wFull
+                        ]
+                    ]
+                    [ ProductCard.newChip ]
+                , ProductCard.titleView "Cinch Minipack"
+                , ProductCard.priceView "$89"
+                , ProductCard.swatchesView
+                    [ ProductCardSwatch.color
+                        { r = 128
+                        , g = 0
+                        , b = 0
+                        , selected = False
+                        , onClick = ClickedAddToCart
+                        }
+                    , ProductCardSwatch.color
+                        { r = 0
+                        , g = 165
+                        , b = 200
+                        , selected = True
+                        , onClick = ClickedAddToCart
+                        }
+                    ]
+                ]
 
 
 collapsibleExampleView : List CollapsibleExample -> CollapsibleExample -> Html Msg
