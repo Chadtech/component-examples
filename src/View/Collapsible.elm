@@ -87,11 +87,7 @@ toHtml body collapsible =
     let
         icon : Html msg
         icon =
-            if collapsible.isOpen then
-                chevronDownSvg
-
-            else
-                chevronUpSvg
+            chevronUpSvg
 
         topRow : Html msg
         topRow =
@@ -112,6 +108,16 @@ toHtml body collapsible =
                     [ Attr.css
                         [ S.w4
                         , S.h4
+                        , Css.transform <|
+                            Css.rotate
+                                (Css.deg <|
+                                    if collapsible.isOpen then
+                                        0
+
+                                    else
+                                        180
+                                )
+                        , Css.property "transition" "transform 0.2s ease"
                         ]
                     ]
                     [ icon ]

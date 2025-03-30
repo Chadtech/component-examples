@@ -36,6 +36,8 @@ import Style as S
 import View.Button as Button
 import View.Button.Big as BigButton
 import View.Collapsible as Collapsible
+import View.ProductCard as ProductCard
+import View.ProductCard.Grid as ProductCardGrid
 
 
 
@@ -51,11 +53,17 @@ type alias Model =
 type Component
     = Component__Button
     | Component__Collapsible
+    | Component__ProductCard
 
 
 type CollapsibleExample
     = CE__Text
     | CE__Filter
+
+
+type Product
+    = Product__CellPhone
+    | Product__Handbag
 
 
 type Msg
@@ -90,6 +98,7 @@ allComponents : List Component
 allComponents =
     [ Component__Button
     , Component__Collapsible
+    , Component__ProductCard
     ]
 
 
@@ -97,6 +106,13 @@ allCollapsibleExamples : List CollapsibleExample
 allCollapsibleExamples =
     [ CE__Text
     , CE__Filter
+    ]
+
+
+allProducts : List Product
+allProducts =
+    [ Product__CellPhone
+    , Product__Handbag
     ]
 
 
@@ -144,14 +160,14 @@ document model =
 globalStyles : Html Msg
 globalStyles =
     Css.Global.global
-        [ Css.Global.body
+        ([ Css.Global.body
             [ S.m0
             , S.p4
             , S.col
             , S.g4
             , Css.backgroundColor <| Css.rgb 247 247 247
             ]
-        , Css.Global.everything
+         , Css.Global.everything
             [ Css.fontFamilies
                 [ "GTUltra"
                 , "Lato"
@@ -169,7 +185,9 @@ globalStyles =
                 , "\"Noto Color Emoji\""
                 ]
             ]
-        ]
+         ]
+            ++ ProductCard.globalStyles
+        )
 
 
 view : Model -> List (Html Msg)
@@ -236,7 +254,28 @@ componentExampleView model component =
                     ]
                     (List.map (collapsibleExampleView model.openCollapsibles) allCollapsibleExamples)
                 ]
+
+            Component__ProductCard ->
+                [ ProductCardGrid.view
+                    (List.map productView <| List.concat <| List.repeat 4 allProducts)
+                ]
         )
+
+
+productView : Product -> Html Msg
+productView product =
+    case product of
+        Product__CellPhone ->
+            ProductCard.view
+                (ProductCard.default
+                    |> ProductCard.withHoverOverChip ProductCard.showInsideChip
+                )
+                [ Html.text "YAHOO" ]
+
+        Product__Handbag ->
+            ProductCard.view
+                ProductCard.default
+                [ Html.text "Doink" ]
 
 
 collapsibleExampleView : List CollapsibleExample -> CollapsibleExample -> Html Msg
