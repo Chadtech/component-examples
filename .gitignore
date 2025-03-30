@@ -2,3 +2,10 @@
 elm-stuff
 # elm-repl generated files
 repl-temp-*
+
+
+# Added by cargo
+
+/target
+
+/public/elm.js
