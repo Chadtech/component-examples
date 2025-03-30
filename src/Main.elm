@@ -32,7 +32,7 @@ import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attr
 import Json.Decode as JD
 import Style as S
-import View.Button.Wide as WideButton
+import View.Button as Button
 import View.Collapsible as Collapsible
 
 
@@ -59,6 +59,7 @@ type CollapsibleExample
 type Msg
     = ClickedCollapsible CollapsibleExample
     | ClickedAddToCart
+    | ClickedHello
 
 
 
@@ -121,6 +122,9 @@ update msg model =
         ClickedAddToCart ->
             ( model, Cmd.none )
 
+        ClickedHello ->
+            ( model, Cmd.none )
+
 
 
 --------------------------------------------------------
@@ -140,7 +144,7 @@ globalStyles =
     Css.Global.global
         [ Css.Global.body
             [ S.m0
-            , S.p0
+            , S.p4
             , S.col
             , S.g4
             ]
@@ -171,16 +175,31 @@ componentExampleView : Model -> Component -> Html Msg
 componentExampleView model component =
     Html.div
         [ Attr.css
-            [ S.flex1 ]
+            [ S.flex1
+            , S.g4
+            , S.col
+            ]
         ]
         (case component of
             Component__Button ->
                 [ Html.div
                     [ Attr.css
+                        [ S.row
+                        , S.g4
+                        ]
+                    ]
+                    [ Button.simple "Hello" ClickedHello
+                        |> Button.toHtml
+                    , Button.simple "Hi" ClickedHello
+                        |> Button.toHtml
+                    ]
+                , Html.div
+                    [ Attr.css
                         [ S.w64 ]
                     ]
-                    [ WideButton.simple "ADD TO CART" ClickedAddToCart
-                        |> WideButton.toHtml
+                    [ Button.simple "ADD TO CART" ClickedAddToCart
+                        |> Button.fullWidth
+                        |> Button.toHtml
                     ]
                 ]
 
