@@ -1,7 +1,7 @@
 module View.Button.Big exposing
     ( BigButton
     , disable
-    , simple
+    , primary
     , toHtml
     )
 
@@ -31,8 +31,8 @@ type alias BigButton msg =
 ----------------------------------------------------------------
 
 
-simple : String -> msg -> BigButton msg
-simple label msg =
+primary : String -> msg -> BigButton msg
+primary label msg =
     { label = label
     , onClick = msg
     }
@@ -50,9 +50,12 @@ toHtml button =
     Html.button
         [ Attr.css
             [ S.wFull
-            , S.batch Common.styles
+            , S.batch <| Common.styles Common.Primary
             , S.shadow
             , Css.property "transition" "background-color 0.1s ease"
+            , S.py2
+            , S.px4
+            , S.textMd
             , S.hover
                 [ Css.backgroundColor <| Css.hex "#c75724" ]
             ]

@@ -1,4 +1,4 @@
-module Main exposing (main)
+module Main exposing (borderColor, main)
 
 {-| This repo is meant to demonstrate how I would make various components in Elm.
 
@@ -209,10 +209,12 @@ componentExampleView model component =
                         , S.g4
                         ]
                     ]
-                    [ Button.simple "Hello" ClickedHello
+                    [ Button.primary "Hello" ClickedHello
                         |> Button.disable False
                         |> Button.toHtml
-                    , Button.simple "Hi" ClickedHello
+                    , Button.primary "Hi" ClickedHello
+                        |> Button.toHtml
+                    , Button.secondary "Show more +" ClickedHello
                         |> Button.toHtml
                     ]
                 , Html.div
@@ -220,7 +222,7 @@ componentExampleView model component =
                         [ S.w64
                         ]
                     ]
-                    [ BigButton.simple "ADD TO CART" ClickedAddToCart
+                    [ BigButton.primary "ADD TO CART" ClickedAddToCart
                         |> BigButton.toHtml
                     ]
                 ]
@@ -228,7 +230,9 @@ componentExampleView model component =
             Component__Collapsible ->
                 [ Html.div
                     [ Attr.css
-                        [ S.borderB ]
+                        [ S.borderB
+                        , borderColor
+                        ]
                     ]
                     (List.map (collapsibleExampleView model.openCollapsibles) allCollapsibleExamples)
                 ]
@@ -251,7 +255,7 @@ collapsibleExampleView openCollapsibles example =
             case example of
                 CE__Text ->
                     Collapsible.simple
-                        "Text"
+                        "TEXT"
                         { isOpen = isOpen }
                         msg
                         |> Collapsible.toHtml
@@ -264,7 +268,7 @@ collapsibleExampleView openCollapsibles example =
 
                 CE__Filter ->
                     Collapsible.simple
-                        "Filter"
+                        "FILTER"
                         { isOpen = isOpen }
                         msg
                         |> Collapsible.toHtml
@@ -278,10 +282,16 @@ collapsibleExampleView openCollapsibles example =
     Html.div
         [ Attr.css
             [ S.borderT
+            , borderColor
             , S.p2
             ]
         ]
         [ collapsible ]
+
+
+borderColor : Css.Style
+borderColor =
+    Css.borderColor <| Css.rgb 219 219 219
 
 
 

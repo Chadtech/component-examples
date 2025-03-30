@@ -8,6 +8,7 @@ module View.Collapsible exposing
 -- TYPES --
 --------------------------------------------------------------------------------
 
+import Css
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attr
 import Html.Styled.Events as Ev
@@ -102,7 +103,10 @@ toHtml body collapsible =
                     ]
                 ]
                 [ Html.div
-                    []
+                    [ Attr.css
+                        [ Css.color <| Css.rgb 51 51 51
+                        ]
+                    ]
                     [ Html.text collapsible.label ]
                 , Html.div
                     [ Attr.css
