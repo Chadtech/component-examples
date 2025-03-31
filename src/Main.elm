@@ -238,7 +238,41 @@ globalStyles =
 
 view : Model -> List (Html Msg)
 view model =
-    globalStyles :: List.map (componentView model) allComponents
+    globalStyles
+        :: intro
+        :: List.map (componentView model) allComponents
+
+
+intro : Html Msg
+intro =
+    Html.div
+        [ Attr.css
+            [ S.row
+            , S.justifyCenter
+            ]
+        ]
+        [ Html.div
+            [ Attr.css
+                [ maxWidth
+                , S.whitespacePreWrap
+                ]
+            ]
+            [ Html.text introText ]
+        ]
+
+
+maxWidth : Css.Style
+maxWidth =
+    S.maxW320
+
+
+introText : String
+introText =
+    """Making components is tricky. The reason to make re-usable components, is to unite parts of your software under one common code source, so that changes made to the component are reflected at all the places it is used.
+
+I think this is counter-intuitive to many people. It is intuitive that if two things are the same (two buttons, for example), they should use the same code. This is true only to the extent that we expect the buttons to change together through out the life span of the project. If two buttons are identical, but we know that one button will evolve over time in ways that will interfere with the implementation details of the other, they should not be based on a re-usable component. Conversely, if two things are not the same, but maybe share one important attribute, such as their width, they should be based on re-usable code. That way, if we need to change the width, all things that share that width will change together, regardless as to whether those things are in any sense "the same".
+
+Furthermore, this question of "do these things change together" applies not only to the decision of whether to make something a re-usable component, but which parts should be re-usable. Modals, for example, are all similar in their placement on the screen, their general layout, and their behavior of closing when clicked outside of. But beyond that, they are pretty different, and might have wildly different content in the body of the modal. Given these details, I like to make modal components re-use code for the container of the modal, but leave the body of the internal content of a modal pretty open and loosely defined with few requirements."""
 
 
 componentView : Model -> Component -> Html Msg
@@ -265,26 +299,67 @@ componentView model component =
 
                 Err _ ->
                     Html.text "Error"
+
+        componentName : String
+        componentName =
+            case component of
+                Component__Button ->
+                    "Button"
+
+                Component__Collapsible ->
+                    "Collapsible"
+
+                Component__ProductCard ->
+                    "Product Card"
+
+        description : String
+        description =
+            case component of
+                Component__Button ->
+                    "I decided to make Button and BigButton separate modules. They are superficially very similar, but I found the small implementation details of the two different enough that I did not want to over complicate a single Button module meant to support both kinds of buttons. I did however, make a View.Button.Common` module that contains their similar parts, such as their colors, common styling, and variants (primary, secondary)."
+
+                Component__Collapsible ->
+                    "To users, it looks like the collapsible UI element contains the things that collapse and expand. As a developer, this makes it tempting to make the Collapsible module take in the content that will expand and collapse as an argument. But there are some issues I forsee with that, and in the meantime, I think the alternative implementation is pretty nice. "
+
+                Component__ProductCard ->
+                    "These kinds of components are really dangerous in my experience. They have a lot of details. Every time a detail is added, the module gets more complicated and fragile. To mitigate these risks, I have learned the \"bag of tools\" approach to API design. That means, rather than exposing a single function that takes a lot of individual details as parameters; instead expose lots of small functions that the user can use together. It may be the case that the small functions are used together in very standard and predictable ways, which in some ways translates to more boilerplate at the call-site, but that is a worthwhile trade off in my opinion."
     in
     Html.div
         [ Attr.css
-            [ S.row
-            , S.g4
+            [ S.col
+            , S.g2
             ]
         ]
         [ Html.div
             [ Attr.css
-                [ S.flex1
-                , S.border
-                , S.p2
-                , Css.fontFamilies [ "monospace" ]
+                [ S.textLg ]
+            ]
+            [ Html.text componentName ]
+        , Html.div
+            [ Attr.css
+                [ maxWidth ]
+            ]
+            [ Html.text description ]
+        , Html.div
+            [ Attr.css
+                [ S.row
+                , S.g4
                 ]
             ]
-            [ SyntaxHighlight.useTheme SyntaxHighlight.gitHub
-                |> Html.fromUnstyled
-            , codeHtml
+            [ Html.div
+                [ Attr.css
+                    [ S.flex1
+                    , S.border
+                    , S.p2
+                    , Css.fontFamilies [ "monospace" ]
+                    ]
+                ]
+                [ SyntaxHighlight.useTheme SyntaxHighlight.gitHub
+                    |> Html.fromUnstyled
+                , codeHtml
+                ]
+            , componentExampleView model component
             ]
-        , componentExampleView model component
         ]
 
 
@@ -307,7 +382,7 @@ buttons =
             |> Button.toHtml
         , Button.primary "Hi" ClickedHello
             |> Button.toHtml
-        , Button.secondary "Show more +" ClickedHello
+        , Button.secondary "Show more +" ClickedShowMore
             |> Button.toHtml
         ]
     , Html.div
@@ -334,7 +409,7 @@ html =
             Collapsible.simple
                 "TEXT"
                 { isOpen = isOpen }
-                ClickedHello
+                ClickedTextCollapsible
                 |> Collapsible.toHtml
 
         content : List (Html Msg)
@@ -639,7 +714,7 @@ collapsibleExampleView openCollapsibles example =
                         ]
 
                     CE__Text ->
-                        [ Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
+                        [ Html.text "Peekaboo" ]
 
             else
                 []
