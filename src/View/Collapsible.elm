@@ -82,8 +82,8 @@ simple label rec msg =
     }
 
 
-toHtml : List (Html msg) -> Collapsible msg -> Html msg
-toHtml body collapsible =
+toHtml : Collapsible msg -> Html msg
+toHtml collapsible =
     let
         icon : Html msg
         icon =
@@ -130,4 +130,4 @@ toHtml body collapsible =
             ]
         , Ev.onClick collapsible.onClick
         ]
-        (topRow :: body)
+        [ topRow ]

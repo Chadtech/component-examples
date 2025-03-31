@@ -38,7 +38,8 @@ import View.Button.Big as BigButton
 import View.Collapsible as Collapsible
 import View.ProductCard as ProductCard
 import View.ProductCard.Grid as ProductCardGrid
-import View.ProductCard.Swatch as ProductCardSwatch
+import View.ProductCard.Image as ProductCardImage
+import View.ProductCard.Swatch as ProductCardSwatch exposing (Swatch)
 
 
 
@@ -48,7 +49,11 @@ import View.ProductCard.Swatch as ProductCardSwatch
 
 
 type alias Model =
-    { openCollapsibles : List CollapsibleExample }
+    { openCollapsibles : List CollapsibleExample
+    , selectedBagColorOption : BagColorOption
+    , selectedPhoneCaseColorOption : PhoneCaseColorOption
+    , selectedWalletColorOption : WalletColorOption
+    }
 
 
 type Component
@@ -63,14 +68,34 @@ type CollapsibleExample
 
 
 type Product
-    = Product__CellPhone
-    | Product__bag
+    = Product__PhoneCase
+    | Product__Bag
+    | Product__Wallet
 
 
 type Msg
     = ClickedCollapsible CollapsibleExample
     | ClickedAddToCart
     | ClickedHello
+    | ClickedBagColorOption BagColorOption
+    | ClickedPhoneCaseColorOption PhoneCaseColorOption
+    | ClickedWalletColorOption WalletColorOption
+
+
+type BagColorOption
+    = BCO__Maroon
+    | BCO__Teal
+
+
+type PhoneCaseColorOption
+    = PCCO__Red
+    | PCCO__Blue
+    | PCCO__Green
+
+
+type WalletColorOption
+    = WCO__Gray
+    | WCO__Brown
 
 
 
@@ -84,7 +109,11 @@ init json =
     let
         model : Model
         model =
-            { openCollapsibles = [] }
+            { openCollapsibles = []
+            , selectedBagColorOption = BCO__Teal
+            , selectedPhoneCaseColorOption = PCCO__Red
+            , selectedWalletColorOption = WCO__Gray
+            }
     in
     ( model, Cmd.none )
 
@@ -112,8 +141,9 @@ allCollapsibleExamples =
 
 allProducts : List Product
 allProducts =
-    [ Product__CellPhone
-    , Product__bag
+    [ Product__PhoneCase
+    , Product__Bag
+    , Product__Wallet
     ]
 
 
@@ -143,6 +173,21 @@ update msg model =
 
         ClickedHello ->
             ( model, Cmd.none )
+
+        ClickedBagColorOption bagColorOption ->
+            ( { model | selectedBagColorOption = bagColorOption }
+            , Cmd.none
+            )
+
+        ClickedPhoneCaseColorOption phoneCaseColorOption ->
+            ( { model | selectedPhoneCaseColorOption = phoneCaseColorOption }
+            , Cmd.none
+            )
+
+        ClickedWalletColorOption walletColorOption ->
+            ( { model | selectedWalletColorOption = walletColorOption }
+            , Cmd.none
+            )
 
 
 
@@ -259,80 +304,138 @@ componentExampleView model component =
 
             Component__ProductCard ->
                 [ ProductCardGrid.view
-                    (List.map productView <| List.concat <| List.repeat 4 allProducts)
+                    (List.map (productView model) <|
+                        List.concat <|
+                            List.repeat 4 allProducts
+                    )
                 ]
         )
 
 
-productView : Product -> Html Msg
-productView product =
+productView : Model -> Product -> Html Msg
+productView model product =
     case product of
-        Product__CellPhone ->
+        Product__PhoneCase ->
+            let
+                phoneCaseColorOption : PhoneCaseColorOption -> Swatch Msg
+                phoneCaseColorOption colorOption =
+                    let
+                        ( r, g, b ) =
+                            case colorOption of
+                                PCCO__Red ->
+                                    ( 255, 0, 0 )
+
+                                PCCO__Blue ->
+                                    ( 0, 0, 255 )
+
+                                PCCO__Green ->
+                                    ( 0, 255, 0 )
+                    in
+                    ProductCardSwatch.color
+                        { r = r
+                        , g = g
+                        , b = b
+                        , selected = colorOption == model.selectedPhoneCaseColorOption
+                        , onClick = ClickedPhoneCaseColorOption colorOption
+                        }
+            in
             ProductCard.view
                 (ProductCard.default
                     |> ProductCard.withHoverOverChip ProductCard.showInsideChip
                 )
-                [ ProductCard.imageView
+                [ ProductCardImage.simple
                     "https://bellroy-product-images.imgix.net/bellroy_dot_com_range_page_image/USD/PECA-BIC-502/0?auto=format&fit=max&w=640"
+                    |> ProductCardImage.toHtml
                 , ProductCard.titleView "Bio Phone Case"
                 , ProductCard.priceView "$19"
                 , ProductCard.swatchesView
-                    [ ProductCardSwatch.color
-                        { r = 255
-                        , g = 0
-                        , b = 0
-                        , selected = True
-                        , onClick = ClickedAddToCart
-                        }
-                    , ProductCardSwatch.color
-                        { r = 0
-                        , g = 255
-                        , b = 0
-                        , selected = False
-                        , onClick = ClickedAddToCart
-                        }
-                    , ProductCardSwatch.color
-                        { r = 0
-                        , g = 0
-                        , b = 255
-                        , selected = False
-                        , onClick = ClickedAddToCart
-                        }
-                    ]
+                    (List.map
+                        phoneCaseColorOption
+                        [ PCCO__Red
+                        , PCCO__Green
+                        , PCCO__Blue
+                        ]
+                    )
                 , ProductCard.descriptionView
                     "Slim protection from your iphone"
                 ]
 
-        Product__bag ->
+        Product__Bag ->
+            let
+                bagColorView : BagColorOption -> Swatch Msg
+                bagColorView bagColorOption =
+                    let
+                        ( r, g, b ) =
+                            case bagColorOption of
+                                BCO__Maroon ->
+                                    ( 128, 0, 0 )
+
+                                BCO__Teal ->
+                                    ( 0, 165, 200 )
+                    in
+                    ProductCardSwatch.color
+                        { r = r
+                        , g = g
+                        , b = b
+                        , selected = bagColorOption == model.selectedBagColorOption
+                        , onClick = ClickedBagColorOption bagColorOption
+                        }
+            in
             ProductCard.view
                 ProductCard.default
-                [ ProductCard.imageView
+                [ ProductCardImage.simple
                     "https://bellroy-product-images.imgix.net/bellroy_dot_com_range_page_image/USD/BHRA-DNB-243/0?auto=format&fit=max&w=640"
-                , Html.div
-                    [ Attr.css
-                        [ S.row
-                        , S.wFull
-                        ]
-                    ]
-                    [ ProductCard.newChip ]
+                    |> ProductCardImage.withChip
+                        ProductCard.newChip
+                    |> ProductCardImage.toHtml
                 , ProductCard.titleView "Cinch Minipack"
                 , ProductCard.priceView "$89"
                 , ProductCard.swatchesView
-                    [ ProductCardSwatch.color
-                        { r = 128
-                        , g = 0
-                        , b = 0
-                        , selected = False
-                        , onClick = ClickedAddToCart
+                    (List.map
+                        bagColorView
+                        [ BCO__Maroon
+                        , BCO__Teal
+                        ]
+                    )
+                ]
+
+        Product__Wallet ->
+            let
+                walletColorView : WalletColorOption -> Swatch Msg
+                walletColorView colorOption =
+                    let
+                        ( r, g, b ) =
+                            case colorOption of
+                                WCO__Gray ->
+                                    ( 128, 128, 128 )
+
+                                WCO__Brown ->
+                                    ( 165, 42, 42 )
+                    in
+                    ProductCardSwatch.color
+                        { r = r
+                        , g = g
+                        , b = b
+                        , selected = colorOption == model.selectedWalletColorOption
+                        , onClick = ClickedWalletColorOption colorOption
                         }
-                    , ProductCardSwatch.color
-                        { r = 0
-                        , g = 165
-                        , b = 200
-                        , selected = True
-                        , onClick = ClickedAddToCart
-                        }
-                    ]
+            in
+            ProductCard.view
+                (ProductCard.default
+                    |> ProductCard.asDark
+                )
+                [ ProductCardImage.simple
+                    "https://bellroy-product-images.imgix.net/bellroy_dot_com_range_page_image/USD/WXSA-RVN-317/0?auto=format&fit=max&w=640"
+                    |> ProductCardImage.toHtml
+                , ProductCard.titleView "Cinch Minipack"
+                , ProductCard.priceView "$89"
+                , ProductCard.swatchesView
+                    (List.map
+                        walletColorView
+                        [ WCO__Gray
+                        , WCO__Brown
+                        ]
+                    )
                 ]
 
 
@@ -347,34 +450,66 @@ collapsibleExampleView openCollapsibles example =
         isOpen =
             List.member example openCollapsibles
 
-        collapsible : Html Msg
-        collapsible =
+        label : String
+        label =
             case example of
                 CE__Text ->
-                    Collapsible.simple
-                        "TEXT"
-                        { isOpen = isOpen }
-                        msg
-                        |> Collapsible.toHtml
-                            (if isOpen then
-                                [ Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
-
-                             else
-                                []
-                            )
+                    "TEXT"
 
                 CE__Filter ->
-                    Collapsible.simple
-                        "FILTER"
-                        { isOpen = isOpen }
-                        msg
-                        |> Collapsible.toHtml
-                            (if isOpen then
-                                [ Html.text "TODO" ]
+                    "FILTER"
 
-                             else
-                                []
+        collapsible : Html Msg
+        collapsible =
+            Collapsible.simple
+                label
+                { isOpen = isOpen }
+                msg
+                |> Collapsible.toHtml
+
+        content : List (Html Msg)
+        content =
+            if isOpen then
+                case example of
+                    CE__Filter ->
+                        let
+                            filterView : String -> Html msg
+                            filterView text =
+                                Html.div
+                                    [ Attr.css
+                                        [ S.g4
+                                        , S.row
+                                        , S.itemsCenter
+                                        ]
+                                    ]
+                                    [ Html.input
+                                        [ Attr.type_ "checkbox" ]
+                                        []
+                                    , Html.text text
+                                    ]
+                        in
+                        [ Html.div
+                            [ Attr.css
+                                [ S.g2
+                                , S.py2
+                                , S.col
+                                ]
+                            ]
+                            (List.map
+                                filterView
+                                [ "10+ cards"
+                                , "5 - 10 cards"
+                                , "<5 cards"
+                                , "Flat bills"
+                                ]
                             )
+                        ]
+
+                    CE__Text ->
+                        [ Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
+
+            else
+                []
     in
     Html.div
         [ Attr.css
@@ -383,7 +518,7 @@ collapsibleExampleView openCollapsibles example =
             , S.p2
             ]
         ]
-        [ collapsible ]
+        (collapsible :: content)
 
 
 borderColor : Css.Style

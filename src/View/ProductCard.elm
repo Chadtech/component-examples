@@ -1,8 +1,8 @@
 module View.ProductCard exposing
-    ( default
+    ( asDark
+    , default
     , descriptionView
     , globalStyles
-    , imageView
     , newChip
     , priceView
     , showInsideChip
@@ -27,7 +27,14 @@ import View.ProductCard.Swatch as Swatch exposing (Swatch)
 
 
 type alias ProductCard msg =
-    { hoverOverChip : Maybe (Html msg) }
+    { hoverOverChip : Maybe (Html msg)
+    , color : Color
+    }
+
+
+type Color
+    = Color__Light
+    | Color__Dark
 
 
 
@@ -38,7 +45,14 @@ type alias ProductCard msg =
 
 default : ProductCard msg
 default =
-    { hoverOverChip = Nothing }
+    { hoverOverChip = Nothing
+    , color = Color__Light
+    }
+
+
+asDark : ProductCard msg -> ProductCard msg
+asDark pc =
+    { pc | color = Color__Dark }
 
 
 withHoverOverChip : Html msg -> ProductCard msg -> ProductCard msg
@@ -64,6 +78,7 @@ view productCard body =
                             [ S.top0
                             , S.right0
                             , S.absolute
+                            , S.z1
                             ]
                         , Attr.class "hover-over-chip"
                         ]
@@ -71,10 +86,29 @@ view productCard body =
 
                 Nothing ->
                     Html.text ""
+
+        bgColor : Css.Color
+        bgColor =
+            case productCard.color of
+                Color__Light ->
+                    Css.rgb 247 247 247
+
+                Color__Dark ->
+                    Css.rgb 78 78 78
+
+        textColor : Css.Color
+        textColor =
+            case productCard.color of
+                Color__Light ->
+                    Css.rgb 0 0 0
+
+                Color__Dark ->
+                    Css.rgb 255 255 255
     in
     Html.div
         [ Attr.css
-            [ Css.backgroundColor <| Css.rgb 247 247 247
+            [ Css.backgroundColor bgColor
+            , Css.color textColor
             , S.relative
             , S.col
             , S.itemsCenter
@@ -146,20 +180,6 @@ globalStyles =
             ]
         ]
     ]
-
-
-imageView : String -> Html msg
-imageView imageUrl =
-    Html.div
-        [ Attr.css
-            [ Css.backgroundImage <| Css.url imageUrl
-            , Css.backgroundSize Css.cover
-            , Css.backgroundPosition Css.center
-            , S.h64
-            , S.w64
-            ]
-        ]
-        []
 
 
 showInsideChip : Html msg
