@@ -33,6 +33,7 @@ import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attr
 import Json.Decode as JD
 import Style as S
+import SyntaxHighlight
 import View.Button as Button
 import View.Button.Big as BigButton
 import View.Collapsible as Collapsible
@@ -211,8 +212,6 @@ globalStyles =
             , S.p4
             , S.col
             , S.g4
-
-            --, Css.backgroundColor <| Css.rgb 247 247 247
             ]
          , Css.Global.everything
             [ Css.fontFamilies
@@ -244,17 +243,164 @@ view model =
 
 componentView : Model -> Component -> Html Msg
 componentView model component =
+    let
+        codeSample : String
+        codeSample =
+            case component of
+                Component__Button ->
+                    buttonCodeExample
+
+                Component__Collapsible ->
+                    collapsibleCodeExample
+
+                Component__ProductCard ->
+                    productCardExample
+
+        codeHtml : Html Msg
+        codeHtml =
+            case SyntaxHighlight.elm codeSample of
+                Ok code ->
+                    SyntaxHighlight.toBlockHtml (Just 10) code
+                        |> Html.fromUnstyled
+
+                Err _ ->
+                    Html.text "Error"
+    in
     Html.div
         [ Attr.css
-            [ S.row ]
+            [ S.row
+            , S.g4
+            ]
         ]
         [ Html.div
             [ Attr.css
-                [ S.flex1 ]
+                [ S.flex1
+                , S.border
+                , S.p2
+                , Css.fontFamilies [ "monospace" ]
+                ]
             ]
-            [ Html.text "TODO - code block area" ]
+            [ SyntaxHighlight.useTheme SyntaxHighlight.gitHub
+                |> Html.fromUnstyled
+            , codeHtml
+            ]
         , componentExampleView model component
         ]
+
+
+buttonCodeExample : String
+buttonCodeExample =
+    """import View.Button as Button
+import View.Button.Big as BigButton
+
+
+buttons : List (Html Msg)
+buttons =
+    [ Html.div
+        [ Attr.css
+            [ S.row
+            , S.g4
+            ]
+        ]
+        [ Button.primary "Hello" ClickedHello
+            |> Button.disable False
+            |> Button.toHtml
+        , Button.primary "Hi" ClickedHello
+            |> Button.toHtml
+        , Button.secondary "Show more +" ClickedHello
+            |> Button.toHtml
+        ]
+    , Html.div
+        [ Attr.css
+            [ S.w64
+            ]
+        ]
+        [ BigButton.primary "ADD TO CART" ClickedAddToCart
+            |> BigButton.toHtml
+        ]
+    ]
+"""
+        |> String.replace "    " "\t"
+
+
+collapsibleCodeExample : String
+collapsibleCodeExample =
+    """import View.Collapsible as Collapsible
+    
+html = 
+    let 
+        collapsibleHtml : Html Msg
+        collapsibleHtml =
+            Collapsible.simple
+                "TEXT"
+                { isOpen = isOpen }
+                ClickedHello
+                |> Collapsible.toHtml
+
+        content : List (Html Msg)
+        content =
+            if isOpen then
+                [ Html.text "Peekaboo" ]
+
+            else
+                []
+    in 
+    Html.div
+        [ Attr.css
+            [ S.borderT
+            , borderColor
+            , S.p2
+            ]
+        ]
+        (collapsible :: content)
+    
+"""
+        |> String.replace "    " "\t"
+
+
+productCardExample : String
+productCardExample =
+    """import View.ProductCard as ProductCard
+import View.ProductCard.Grid as ProductCardGrid
+import View.ProductCard.Image as ProductCardImage
+import View.ProductCard.Swatch as ProductCardSwatch exposing (Swatch)
+
+
+bagCard : Model -> Html Msg
+bagCard model =
+    let
+        bagColorView : BagColorOption -> Swatch Msg
+        bagColorView bagColorOption =
+            ProductCardSwatch.color
+                { rgb =
+                    case bagColorOption of
+                        Maroon ->
+                            ( 128, 0, 0 )
+
+                        Teal ->
+                            ( 0, 165, 200 )
+                , selected = bagColorOption == model.selectedBagColorOption
+                , onClick = ClickedBagColorOption bagColorOption
+                }
+    in
+    ProductCard.view
+        ProductCard.default
+        [ ProductCardImage.simple
+            imageUrl
+            |> ProductCardImage.withChip ProductCard.newChip
+            |> ProductCardImage.toHtml
+        , ProductCard.titleView "Cinch Minipack"
+        , ProductCard.priceView "$89"
+        , ProductCard.swatchesView
+            (List.map
+                bagColorView
+                [ Maroon
+                , Teal
+                ]
+            )
+        ]
+    """
+        |> String.replace "    " "\t"
 
 
 componentExampleView : Model -> Component -> Html Msg
@@ -319,8 +465,8 @@ productView model product =
             let
                 phoneCaseColorOption : PhoneCaseColorOption -> Swatch Msg
                 phoneCaseColorOption colorOption =
-                    let
-                        ( r, g, b ) =
+                    ProductCardSwatch.color
+                        { rgb =
                             case colorOption of
                                 PCCO__Red ->
                                     ( 255, 0, 0 )
@@ -330,11 +476,6 @@ productView model product =
 
                                 PCCO__Green ->
                                     ( 0, 255, 0 )
-                    in
-                    ProductCardSwatch.color
-                        { r = r
-                        , g = g
-                        , b = b
                         , selected = colorOption == model.selectedPhoneCaseColorOption
                         , onClick = ClickedPhoneCaseColorOption colorOption
                         }
@@ -364,19 +505,14 @@ productView model product =
             let
                 bagColorView : BagColorOption -> Swatch Msg
                 bagColorView bagColorOption =
-                    let
-                        ( r, g, b ) =
+                    ProductCardSwatch.color
+                        { rgb =
                             case bagColorOption of
                                 BCO__Maroon ->
                                     ( 128, 0, 0 )
 
                                 BCO__Teal ->
                                     ( 0, 165, 200 )
-                    in
-                    ProductCardSwatch.color
-                        { r = r
-                        , g = g
-                        , b = b
                         , selected = bagColorOption == model.selectedBagColorOption
                         , onClick = ClickedBagColorOption bagColorOption
                         }
@@ -403,19 +539,14 @@ productView model product =
             let
                 walletColorView : WalletColorOption -> Swatch Msg
                 walletColorView colorOption =
-                    let
-                        ( r, g, b ) =
+                    ProductCardSwatch.color
+                        { rgb =
                             case colorOption of
                                 WCO__Gray ->
                                     ( 128, 128, 128 )
 
                                 WCO__Brown ->
                                     ( 165, 42, 42 )
-                    in
-                    ProductCardSwatch.color
-                        { r = r
-                        , g = g
-                        , b = b
                         , selected = colorOption == model.selectedWalletColorOption
                         , onClick = ClickedWalletColorOption colorOption
                         }

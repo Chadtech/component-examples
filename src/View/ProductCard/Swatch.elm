@@ -39,15 +39,17 @@ type
 
 
 color :
-    { r : Int
-    , g : Int
-    , b : Int
+    { rgb : ( Int, Int, Int )
     , selected : Bool
     , onClick : msg
     }
     -> Swatch msg
 color rec =
-    { value = V__Color { r = rec.r, g = rec.g, b = rec.b }
+    let
+        ( r, g, b ) =
+            rec.rgb
+    in
+    { value = V__Color { r = r, g = g, b = b }
     , selected = rec.selected
     , onClick = rec.onClick
     }
