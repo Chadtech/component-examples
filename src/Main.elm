@@ -384,7 +384,9 @@ bagCard model =
                 }
     in
     ProductCard.view
-        ProductCard.default
+        (ProductCard.default
+            |> ProductCard.withHoverOverChip ProductCard.showInsideChip
+        )
         [ ProductCardImage.simple
             imageUrl
             |> ProductCardImage.withChip ProductCard.newChip
