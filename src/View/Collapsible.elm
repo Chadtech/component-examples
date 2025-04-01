@@ -100,7 +100,7 @@ toHtml collapsible =
                 ]
                 [ Html.div
                     [ Attr.css
-                        [ Css.color <| Css.rgb 51 51 51
+                        [ S.textGray0
                         ]
                     ]
                     [ Html.text collapsible.label ]

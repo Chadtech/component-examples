@@ -2,17 +2,24 @@ module Style exposing
     ( absolute
     , batch
     , bgGray1
+    , bgGray2
     , bgGray4
     , bgNightwood1
     , bgNone
+    , bgOrange0
+    , bgOrange1
+    , bgTeal
+    , bgTransparent
     , bgYellow1
     , block
     , border
     , borderB
     , borderBox
+    , borderGray3
     , borderL
     , borderLg
     , borderNone
+    , borderOrange
     , borderR
     , borderT
     , borderX
@@ -79,7 +86,6 @@ module Style exposing
     , hyphensAuto
     , importantIndent
     , importantOutdent
-    , indent
     , inlineBlock
     , inlineCol
     , inlineRow
@@ -138,7 +144,6 @@ module Style exposing
     , noWrap
     , none
     , opaque
-    , outdent
     , outlineNone
     , overflowAuto
     , overflowHidden
@@ -213,20 +218,19 @@ module Style exposing
     , text4xl
     , textAlignCenter
     , textAlignRight
+    , textBlack
     , textBlue0
     , textBlue1
     , textEllipsis
     , textGray0
     , textGray1
-    , textGray2
-    , textGray3
-    , textGray4
-    , textGray5
     , textLg
     , textMd
+    , textOrange
     , textPrimary
     , textRed1
     , textSm
+    , textWhite
     , textXl
     , textXs
     , textXxl
@@ -282,6 +286,111 @@ import Css
 import Css.Media
 
 
+gray0 : Css.Color
+gray0 =
+    Css.rgb 51 51 51
+
+
+gray1 : Css.Color
+gray1 =
+    Css.rgb 78 78 78
+
+
+gray2 : Css.Color
+gray2 =
+    Css.rgb 201 201 201
+
+
+gray3 : Css.Color
+gray3 =
+    Css.rgb 219 219 219
+
+
+gray4 : Css.Color
+gray4 =
+    Css.rgb 247 247 247
+
+
+bgGray1 : Css.Style
+bgGray1 =
+    Css.backgroundColor gray1
+
+
+bgGray2 : Css.Style
+bgGray2 =
+    Css.backgroundColor gray2
+
+
+bgGray4 : Css.Style
+bgGray4 =
+    Css.backgroundColor gray4
+
+
+bgTeal : Css.Style
+bgTeal =
+    Css.backgroundColor <| Css.rgb 108 184 200
+
+
+textGray1 : Css.Style
+textGray1 =
+    Css.color gray1
+
+
+borderGray3 : Css.Style
+borderGray3 =
+    Css.borderColor gray3
+
+
+textGray0 : Css.Style
+textGray0 =
+    Css.color gray0
+
+
+orange1 : Css.Color
+orange1 =
+    Css.rgb 225 90 29
+
+
+orange0 : Css.Color
+orange0 =
+    Css.hex "#c75724"
+
+
+bgOrange1 : Css.Style
+bgOrange1 =
+    Css.backgroundColor orange1
+
+
+bgOrange0 : Css.Style
+bgOrange0 =
+    Css.backgroundColor orange0
+
+
+bgTransparent : Css.Style
+bgTransparent =
+    Css.backgroundColor <| Css.rgba 0 0 0 0
+
+
+textOrange : Css.Style
+textOrange =
+    Css.color orange1
+
+
+textWhite : Css.Style
+textWhite =
+    Css.color <| Css.rgb 255 255 255
+
+
+textBlack : Css.Style
+textBlack =
+    Css.color <| Css.rgb 0 0 0
+
+
+borderOrange : Css.Style
+borderOrange =
+    Css.borderColor orange1
+
+
 nightwood1Str : String
 nightwood1Str =
     "#071D10"
@@ -332,51 +441,6 @@ yellow5Str =
     "#E3D34B"
 
 
-gray0Str : String
-gray0Str =
-    "#131610"
-
-
-gray1Str : String
-gray1Str =
-    "#2C2826"
-
-
-gray2Str : String
-gray2Str =
-    "#57524F"
-
-
-gray3Str : String
-gray3Str =
-    "#807672"
-
-
-gray4Str : String
-gray4Str =
-    "#B0A69A"
-
-
-gray5Str : String
-gray5Str =
-    "#E0D6CA"
-
-
-gray0Color : Css.Color
-gray0Color =
-    Css.hex gray0Str
-
-
-gray1Color : Css.Color
-gray1Color =
-    Css.hex gray1Str
-
-
-content2Color : Css.Color
-content2Color =
-    Css.hex gray2Str
-
-
 yellow0Color : Css.Color
 yellow0Color =
     Css.hex yellow0Str
@@ -385,26 +449,6 @@ yellow0Color =
 yellow2Color : Css.Color
 yellow2Color =
     Css.hex yellow2Str
-
-
-indent : Css.Style
-indent =
-    [ Css.borderLeft3 (Css.px 2) Css.solid gray0Color
-    , Css.borderTop3 (Css.px 2) Css.solid gray0Color
-    , Css.borderRight3 (Css.px 2) Css.solid content2Color
-    , Css.borderBottom3 (Css.px 2) Css.solid content2Color
-    ]
-        |> Css.batch
-
-
-outdent : Css.Style
-outdent =
-    [ Css.borderLeft3 (Css.px 2) Css.solid content2Color
-    , Css.borderTop3 (Css.px 2) Css.solid content2Color
-    , Css.borderRight3 (Css.px 2) Css.solid gray0Color
-    , Css.borderBottom3 (Css.px 2) Css.solid gray0Color
-    ]
-        |> Css.batch
 
 
 importantOutdent : Css.Style
@@ -1235,46 +1279,6 @@ bgYellow1 =
 bgNightwood1 : Css.Style
 bgNightwood1 =
     Css.property "background" nightwood1Str
-
-
-bgGray1 : Css.Style
-bgGray1 =
-    Css.property "background" gray1Str
-
-
-bgGray4 : Css.Style
-bgGray4 =
-    Css.property "background" gray4Str
-
-
-textGray0 : Css.Style
-textGray0 =
-    Css.property "color" gray0Str
-
-
-textGray1 : Css.Style
-textGray1 =
-    Css.property "color" gray1Str
-
-
-textGray2 : Css.Style
-textGray2 =
-    Css.property "color" gray2Str
-
-
-textGray3 : Css.Style
-textGray3 =
-    Css.property "color" gray3Str
-
-
-textGray4 : Css.Style
-textGray4 =
-    Css.property "color" gray4Str
-
-
-textGray5 : Css.Style
-textGray5 =
-    Css.property "color" gray5Str
 
 
 textBlue0 : Css.Style

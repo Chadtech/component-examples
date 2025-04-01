@@ -57,7 +57,7 @@ toHtml button =
             , S.px4
             , S.textMd
             , S.hover
-                [ Css.backgroundColor <| Css.hex "#c75724" ]
+                [ S.bgOrange0 ]
             ]
         , Ev.onClick button.onClick
         ]

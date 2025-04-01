@@ -722,7 +722,7 @@ collapsibleExampleView openCollapsibles example =
 
 borderColor : Css.Style
 borderColor =
-    Css.borderColor <| Css.rgb 219 219 219
+    S.borderGray3
 
 
 

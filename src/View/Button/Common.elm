@@ -20,17 +20,6 @@ type Variant
 
 
 ----------------------------------------------------------------
--- HELPERS --
-----------------------------------------------------------------
-
-
-orange : Css.Color
-orange =
-    Css.rgb 225 90 29
-
-
-
-----------------------------------------------------------------
 -- API --
 ----------------------------------------------------------------
 
@@ -42,19 +31,19 @@ styles variant =
         bgColor =
             case variant of
                 Primary ->
-                    Css.backgroundColor orange
+                    S.bgOrange1
 
                 Secondary ->
-                    Css.backgroundColor <| Css.rgba 0 0 0 0
+                    S.bgTransparent
 
         textColor : Style
         textColor =
             case variant of
                 Primary ->
-                    Css.color <| Css.rgb 255 255 255
+                    S.textWhite
 
                 Secondary ->
-                    Css.color orange
+                    S.textOrange
 
         fontWeight : Style
         fontWeight =
@@ -70,6 +59,6 @@ styles variant =
     , textColor
     , fontWeight
     , S.border
-    , Css.borderColor orange
+    , S.borderOrange
     , S.pointerCursor
     ]

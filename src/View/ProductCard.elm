@@ -87,28 +87,28 @@ view productCard body =
                 Nothing ->
                     Html.text ""
 
-        bgColor : Css.Color
-        bgColor =
+        bg : Css.Style
+        bg =
             case productCard.color of
                 Color__Light ->
-                    Css.rgb 247 247 247
+                    S.bgGray4
 
                 Color__Dark ->
-                    Css.rgb 78 78 78
+                    S.bgGray1
 
-        textColor : Css.Color
+        textColor : Css.Style
         textColor =
             case productCard.color of
                 Color__Light ->
-                    Css.rgb 0 0 0
+                    S.textBlack
 
                 Color__Dark ->
-                    Css.rgb 255 255 255
+                    S.textWhite
     in
     Html.div
         [ Attr.css
-            [ Css.backgroundColor bgColor
-            , Css.color textColor
+            [ bg
+            , textColor
             , S.relative
             , S.col
             , S.itemsCenter
@@ -157,7 +157,7 @@ descriptionView description =
         [ Attr.css
             [ S.wFull
             , S.textSm
-            , Css.color <| Css.rgb 76 76 76
+            , S.textGray1
             ]
         ]
         [ Html.text description ]
@@ -186,7 +186,7 @@ showInsideChip : Html msg
 showInsideChip =
     Html.div
         [ Attr.css
-            [ Css.backgroundColor <| Css.rgb 201 201 201
+            [ S.bgGray2
             , S.rounded
             , S.p1
             ]
@@ -198,11 +198,11 @@ newChip : Html msg
 newChip =
     Html.div
         [ Attr.css
-            [ Css.backgroundColor <| Css.rgb 108 184 200
+            [ S.bgTeal
             , S.rounded
             , S.px2
             , S.py1
-            , Css.color <| Css.rgb 255 255 255
+            , S.textWhite
             , S.textSm
             ]
         ]
