@@ -1,3 +1,1 @@
-# component-examples
-
-See these component examples live by clicking [here](https://chad-stearns-bellyroy-component-examp.netlify.app/)
+# [This repo is meant to be explored on the live site! Click here](https://chad-stearns-bellyroy-component-examp.netlify.app/)
